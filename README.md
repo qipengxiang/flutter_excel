@@ -1,11 +1,11 @@
 # flutter_excel_table
 
-[![](https://img.shields.io/badge/flutter_excel_table-0.0.1-blue)](https://pub.dartlang.org/packages/flutter_excel_table)
+[![](https://img.shields.io/badge/flutter_excel_table-0.0.1+1-blue)](https://pub.dartlang.org/packages/flutter_excel_table)
 ![](https://img.shields.io/badge/Awesome-Flutter-blue)
 ![](https://img.shields.io/badge/Platform-Android_iOS_Windows_MacOS_Linux-blue)
 ![](https://img.shields.io/badge/License-MIT-blue)
 
-Language: 简体中文 | [English](README.md)
+Language: English | [简体中文](README-ZH.md)
 
 ### Add dependencies to your project
 
