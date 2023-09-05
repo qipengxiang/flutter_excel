@@ -23,10 +23,10 @@ class FlutterExcelWidget<T extends ExcelItemImp> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (!_isExceed) {
-      throw 'Excel 的数据超出了范围';
+      throw 'Excel data is out of range.';
     }
     if (!_isLegalMerge) {
-      throw '合并单元格的位置不合法或者合并单元格的 positions 属性不能为空';
+      throw 'The merged cell location is invalid, or the positions attribute of the merged cells cannot be empty.';
     }
     double width = _getExcelWidth;
     double height = _getExcelHeight;
@@ -71,7 +71,6 @@ class FlutterExcelWidget<T extends ExcelItemImp> extends StatelessWidget {
   }
 
   List<Widget> _buildExcelLinesCells(double totalWidth, double totalHeight) {
-    print({'totalWidth': totalWidth, 'totalHeight': totalHeight,});
     List<Widget> widgets = <Widget>[];
     double left = 0;
     double itemWidth = excel.itemWidth;
