@@ -1,41 +1,93 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+# flutter_excel_table
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages).
+[![](https://img.shields.io/badge/flutter_excel_table-0.0.1-blue)](https://pub.dartlang.org/packages/flutter_excel_table)
+![](https://img.shields.io/badge/Awesome-Flutter-blue)
+![](https://img.shields.io/badge/Platform-Android_iOS_Windows_MacOS_Linux-blue)
+![](https://img.shields.io/badge/License-MIT-blue)
 
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages).
--->
+Language: 简体中文 | [English](README.md)
 
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+### Add dependencies to your project
 
-Language: English | [简体中文](README-ZH.md)
+```yaml
+dependencies:
+  flutter:
+    sdk: flutter
 
-## Features
-
-TODO: List what your package can do. Maybe include images, gifs, or videos.
-
-## Getting started
-
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
-
-## Usage
-
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
-
-```dart
-const like = 'sample';
+  flutter_excel_table: ^latestVersion
 ```
 
-## Additional information
+### Install
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+```shell
+$ flutter pub get
+```
+
+### Import
+
+```dart
+import 'package:flutter_excel_table/flutter_excel_table.dart';
+```
+
+### Usage
+
+```dart
+FlutterExcelWidget<ExcelExampleModel>(
+  excel: ExcelModel(
+    x: 16,
+    y: 16,
+    showSn: true,
+    backgroundColor: Colors.white,
+    rowColor: Colors.blue.withOpacity(.25),
+    positionColor: (int x, int y) => y % 2 == 0,
+  ),
+  items: [
+    ExcelItemModel(
+      position: ExcelPosition(5, 3),
+      value: ExcelExampleModel(value: '合并2222'),
+      color: Colors.cyan,
+      textAlign: TextAlign.end,
+      isReadOnly: true,
+      isMergeCell: true,
+      style: const TextStyle(fontSize: 12, color: Colors.amberAccent),
+      positions: [
+        ExcelPosition(5, 3),
+        ExcelPosition(5, 4),
+        ExcelPosition(6, 3),
+        ExcelPosition(6, 4),
+        ExcelPosition(7, 3),
+        ExcelPosition(7, 4),
+      ],
+    ),
+    ExcelItemModel(
+      position: ExcelPosition(0, 0),
+      value: ExcelExampleModel(value: '10'),
+      isReadOnly: true,
+    ),
+    ExcelItemModel(
+      position: ExcelPosition(0, 1),
+      value: ExcelExampleModel(value: '100'),
+      inputType: ExcelInputType.date,
+    ),
+  ],
+  onItemClicked: (items, item) {},
+  onItemChanged: (items, item, value) {},
+)
+```
+
+[More Example](./example/lib/main.dart)
+
+### Example
+
+#### Example-1
+![](img/example-1.jpg)
+
+#### Example-2
+![](img/example-2.jpg)
+
+#### Example-3
+![](img/example-3.jpg)
+
+#### Example-4
+![](img/example-4.jpg)
+
