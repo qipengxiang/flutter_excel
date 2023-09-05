@@ -1,0 +1,21 @@
+name: flutter_excel_table
+description: A new Flutter project.
+version: 0.0.1
+author: qipengxiang1990@gmail.com
+homepage: https://github.com/qipengxiang
+
+environment:
+  sdk: '>=2.19.6 <3.0.0'
+  flutter: ">=2.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+flutter:
+
