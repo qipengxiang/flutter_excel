@@ -1,11 +1,11 @@
 # flutter_excel_table
 
-[![](https://img.shields.io/badge/flutter_excel_table-0.0.1+1-blue)](https://pub.dartlang.org/packages/flutter_excel_table)
+[![](https://img.shields.io/badge/flutter_excel_table-0.0.2-blue)](https://pub.dartlang.org/packages/flutter_excel_table)
 ![](https://img.shields.io/badge/Awesome-Flutter-blue)
-![](https://img.shields.io/badge/Platform-Android_iOS_Windows_Mac_OS_Linux-blue)
+![](https://img.shields.io/badge/Platform-Android_iOS_Web_Windows_Mac_OS_Linux-blue)
 ![](https://img.shields.io/badge/License-MIT-blue)
 
-Language: 简体中文 | [English](README.md)
+语言: 简体中文 | [English](README.md)
 
 ### 添加到你的项目中
 
@@ -29,6 +29,8 @@ $ flutter pub get
 ```dart
 import 'package:flutter_excel_table/flutter_excel_table.dart';
 ```
+### CHANGELOG
+- [CHANGELOG](./CHANGELOG.md)
 
 ### 使用
 

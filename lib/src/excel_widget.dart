@@ -5,19 +5,23 @@ import 'package:flutter_excel_table/src/widget/excel_line.dart';
 
 import 'excel_model.dart';
 
-
 class FlutterExcelWidget<T extends ExcelItemImp> extends StatelessWidget {
   final ExcelModel excel;
   final List<ExcelItemModel<T>> items;
   final Function(List<ExcelItemModel<T>> items, ExcelItemModel<T> model)? onItemClicked;
   final Function(List<ExcelItemModel<T>> items, ExcelItemModel<T>? model, String? value)? onItemChanged;
 
-  const FlutterExcelWidget({
+  final double? excelWidth; // excel total width ,default is screen width
+  final double? excelHeight; // excel total height, default is screen height
+
+  FlutterExcelWidget({
     Key? key,
     required this.excel,
     this.items = const [],
     this.onItemClicked,
     this.onItemChanged,
+    this.excelWidth,
+    this.excelHeight,
   }) : super(key: key);
 
   @override
@@ -28,47 +32,79 @@ class FlutterExcelWidget<T extends ExcelItemImp> extends StatelessWidget {
     if (!_isLegalMerge) {
       throw 'The merged cell location is invalid, or the positions attribute of the merged cells cannot be empty.';
     }
+    final totalExcelWidth = excelWidth ?? MediaQuery.of(context).size.width;
+    final totalExcelHeight = excelHeight ?? MediaQuery.of(context).size.height;
     double width = _getExcelWidth;
     double height = _getExcelHeight;
+    _onScrollListener();
     _onExcelDataChanged();
-    return SingleChildScrollView(
-      physics: const BouncingScrollPhysics(),
-      child: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        scrollDirection: Axis.horizontal,
-        child: Container(
-          constraints: BoxConstraints.expand(
-            width: width + (excel.showSn ? ((excel.sn?.itemWidth ?? excel.itemWidth) + excel.dividerWidth) : 0.0),
-            height: height + (excel.showSn ? ((excel.sn?.itemHeight ?? excel.itemHeight) + excel.dividerWidth) : 0.0),
-          ),
-          child: Stack(
-            children: [
-              ..._buildVerticalSnLineItems(),
-              ..._buildHorizontalSnLineItems(),
-              _buildExcel(width, height),
-            ],
+    return Stack(
+      children: [
+        Positioned(
+          left: (excel.sn?.itemWidth ?? excel.itemWidth) + excel.dividerWidth,
+          child: SizedBox(
+            width: totalExcelWidth,
+            height: excel.sn?.itemHeight ?? excel.itemHeight,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              controller: _snHorizontalController,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: excel.showSn ? excel.x : 0,
+              itemBuilder: _buildHorizontalSnLineItems,
+            ),
           ),
         ),
-      ),
+        Positioned(
+          top: (excel.sn?.itemHeight ?? excel.itemHeight) + excel.dividerWidth,
+          child: SizedBox(
+            width: excel.sn?.itemWidth ?? excel.itemWidth,
+            height: totalExcelHeight,
+            child: ListView.builder(
+              controller: _snVerticalController,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: excel.showSn ? excel.y : 0,
+              itemBuilder: _buildVerticalSnLineItems,
+            ),
+          ),
+        ),
+        Positioned(
+          left: excel.showSn ? ((excel.sn?.itemWidth ?? excel.itemWidth) + excel.dividerWidth) : 0.0,
+          top: excel.showSn ? ((excel.sn?.itemHeight ?? excel.itemHeight) + excel.dividerWidth) : 0.0,
+          child: SizedBox(
+            height: totalExcelHeight,
+            child: SingleChildScrollView(
+              physics: const ClampingScrollPhysics(),
+              controller: _excelVerticalController,
+              child: SizedBox(
+                width: totalExcelWidth,
+                child: SingleChildScrollView(
+                  physics: const ClampingScrollPhysics(),
+                  controller: _excelHorizontalController,
+                  scrollDirection: Axis.horizontal,
+                  child: Container(
+                    color: excel.backgroundColor,
+                    constraints: BoxConstraints.expand(
+                      width: width,
+                      height: height,
+                    ),
+                    child: Stack(
+                      children: _buildExcelLinesCells(width, height),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
-  Widget _buildExcel(double width, double height) {
-    return Positioned(
-      left: excel.showSn ? ((excel.sn?.itemWidth ?? excel.itemWidth) + excel.dividerWidth) : 0.0,
-      top: excel.showSn ? ((excel.sn?.itemHeight ?? excel.itemHeight) + excel.dividerWidth) : 0.0,
-      child: Container(
-        color: excel.backgroundColor,
-        constraints: BoxConstraints.expand(
-          width: width,
-          height: height,
-        ),
-        child: Stack(
-          children: _buildExcelLinesCells(width, height),
-        ),
-      ),
-    );
-  }
+  final ScrollController _snHorizontalController = ScrollController();
+  final ScrollController _snVerticalController = ScrollController();
+
+  final ScrollController _excelHorizontalController = ScrollController();
+  final ScrollController _excelVerticalController = ScrollController();
 
   List<Widget> _buildExcelLinesCells(double totalWidth, double totalHeight) {
     List<Widget> widgets = <Widget>[];
@@ -76,7 +112,6 @@ class FlutterExcelWidget<T extends ExcelItemImp> extends StatelessWidget {
     double itemWidth = excel.itemWidth;
     double itemHeight = excel.itemHeight;
     for (int i = 0; i <= excel.x; i++) {
-
       if (excel.columnWidth != null) {
         itemWidth = excel.columnWidth!(i);
       }
@@ -128,7 +163,7 @@ class FlutterExcelWidget<T extends ExcelItemImp> extends StatelessWidget {
           itemHeight = excel.rowHeight!(j);
         }
         var model = items.flutterExcelFirstWhereOrNull((e) => e.position.x == i && e.position.y == j);
-        Widget? widget = _itemBuilder(i, j, left, top, model: model, );
+        Widget? widget = _itemBuilder(i, j, left, top, model: model);
         if (widget != null) {
           widgets.add(widget);
         }
@@ -337,86 +372,70 @@ class FlutterExcelWidget<T extends ExcelItemImp> extends StatelessWidget {
 }
 
 extension FlutterExcelSnWidget on FlutterExcelWidget {
-
   /// 纵向 1,2,3...
-  List<Widget> _buildVerticalSnLineItems() {
+  Widget _buildVerticalSnLineItems(BuildContext context, int index) {
     if (!excel.showSn) {
-      return [];
+      return const SizedBox.shrink();
     }
-    List<Widget> lines = <Widget>[];
-    double top = (excel.sn?.itemHeight ?? 0) + excel.dividerWidth;
     double itemHeight = excel.itemHeight;
-    for (int i = 0; i <= excel.y; i++) {
-      if (excel.rowHeight != null) {
-        itemHeight = excel.rowHeight!(i);
-      }
-      Widget line = Positioned(
-        left: 0.0,
-        top: top,
-        child: FlutterExcelLine(
+    if (excel.rowHeight != null) {
+      itemHeight = excel.rowHeight!(index);
+    }
+    return Column(
+      children: [
+        if (index == 0)
+          FlutterExcelLine(
+            thickness: excel.dividerWidth,
+            color: excel.sn?.dividerColor ?? excel.dividerColor,
+            length: excel.sn?.itemWidth ?? excel.itemWidth,
+          ),
+        _buildSnItem(
+          index,
+          width: excel.sn?.itemWidth ?? excel.itemWidth,
+          height: itemHeight,
+          alignment: Alignment.centerRight,
+        ),
+        FlutterExcelLine(
           thickness: excel.dividerWidth,
           color: excel.sn?.dividerColor ?? excel.dividerColor,
           length: excel.sn?.itemWidth ?? excel.itemWidth,
         ),
-      );
-      lines.add(line);
-      if (i < excel.y) {
-        Widget widget = Positioned(
-          left: 0,
-          top: top + excel.dividerWidth,
-          child: _buildSnItem(
-            i,
-            width: excel.sn?.itemWidth ?? excel.itemWidth,
-            height: itemHeight,
-            alignment: Alignment.centerRight,
-          ),
-        );
-        lines.add(widget);
-      }
-      top += (itemHeight + excel.dividerWidth);
-    }
-    return lines;
+      ],
+    );
   }
 
   /// 横向 A,B,C...
-  List<Widget> _buildHorizontalSnLineItems() {
+  Widget _buildHorizontalSnLineItems(BuildContext context, int index) {
     if (!excel.showSn) {
-      return [];
+      return const SizedBox.shrink();
     }
-    List<Widget> widgets = <Widget>[];
-    double left = (excel.sn?.itemWidth ?? 0) + excel.dividerWidth;
     double itemWidth = excel.itemWidth;
-    for (int i = 0; i <= excel.x; i++) {
-      if (excel.columnWidth != null) {
-        itemWidth = excel.columnWidth!(i);
-      }
-      Widget line = Positioned(
-        left: left,
-        top: 0.0,
-        child: FlutterExcelLine(
+    if (excel.columnWidth != null) {
+      itemWidth = excel.columnWidth!(index);
+    }
+    return Row(
+      children: [
+        if (index == 0)
+          FlutterExcelLine(
+            axis: FlutterExcelLineAxis.vertical,
+            thickness: excel.dividerWidth,
+            color: excel.sn?.dividerColor ?? excel.dividerColor,
+            length: excel.sn?.itemHeight ?? excel.itemHeight,
+          ),
+        _buildSnItem(
+          index,
+          height: excel.sn?.itemHeight ?? excel.itemHeight,
+          width: itemWidth,
+          convert: true,
+        ),
+        FlutterExcelLine(
           axis: FlutterExcelLineAxis.vertical,
           thickness: excel.dividerWidth,
           color: excel.sn?.dividerColor ?? excel.dividerColor,
           length: excel.sn?.itemHeight ?? excel.itemHeight,
         ),
-      );
-      widgets.add(line);
-      if (i < excel.x) {
-        Widget widget = Positioned(
-          left: left + excel.dividerWidth,
-          top: 0,
-          child: _buildSnItem(
-            i,
-            height: excel.sn?.itemHeight ?? excel.itemHeight,
-            width: itemWidth,
-            convert: true,
-          ),
-        );
-        widgets.add(widget);
-      }
-      left += (itemWidth + excel.dividerWidth);
-    }
-    return widgets;
+      ],
+    );
   }
 
   Widget _buildSnItem(
@@ -485,3 +504,13 @@ extension FlutterExcelSize on FlutterExcelWidget {
   }
 }
 
+extension FlutterExcelWidgetScroll on FlutterExcelWidget {
+  void _onScrollListener() {
+    _excelHorizontalController.addListener(_onHorizontalScrolled);
+    _excelVerticalController.addListener(_onVerticalScrolled);
+  }
+
+  void _onHorizontalScrolled() => _snHorizontalController.jumpTo(_excelHorizontalController.offset);
+
+  void _onVerticalScrolled() => _snVerticalController.jumpTo(_excelVerticalController.offset);
+}
