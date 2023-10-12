@@ -29,8 +29,8 @@ $ flutter pub get
 ```dart
 import 'package:flutter_excel_table/flutter_excel_table.dart';
 ```
-### CHANGELOG
-- [CHANGELOG](./CHANGELOG.md)
+### 更新日志
+- [更新日志](./CHANGELOG-ZH.md)
 
 ### 使用
 

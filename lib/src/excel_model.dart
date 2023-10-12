@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'const/color.dart';
-
 enum ExcelInputType {
   string,
   integer,
@@ -68,7 +66,7 @@ class ExcelModel {
     TextStyle? style,
   })  : sn = sn ?? ExcelSnModel(),
         dividerColor = dividerColor ?? Colors.black.withOpacity(0.15),
-        style = style ?? TextStyle(fontSize: 14.0, color: ThemeColor.primaryBlack.withOpacity(.45));
+        style = style ?? TextStyle(fontSize: 14.0, color: const Color(0xFF000000).withOpacity(.45));
 }
 
 /// 序号属性,参考ExcelModel
@@ -87,7 +85,7 @@ class ExcelSnModel {
     TextStyle? style,
   })  : backgroundColor = backgroundColor ?? Colors.black.withOpacity(0.02),
         dividerColor = dividerColor ?? Colors.black.withOpacity(0.15),
-        style = style ?? TextStyle(fontSize: 14.0, color: ThemeColor.primaryBlack.withOpacity(.45));
+        style = style ?? TextStyle(fontSize: 14.0, color: const Color(0xFF000000).withOpacity(.45));
 }
 
 class ExcelItemModel<T extends ExcelItemImp> {

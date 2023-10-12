@@ -32,10 +32,11 @@ class FlutterExcelWidget<T extends ExcelItemImp> extends StatelessWidget {
     if (!_isLegalMerge) {
       throw 'The merged cell location is invalid, or the positions attribute of the merged cells cannot be empty.';
     }
-    final totalExcelWidth = excelWidth ?? MediaQuery.of(context).size.width;
-    final totalExcelHeight = excelHeight ?? MediaQuery.of(context).size.height;
-    double width = _getExcelWidth;
-    double height = _getExcelHeight;
+    final screenSize = MediaQuery.of(context).size;
+    final totalExcelWidth = excelWidth ?? screenSize.width;
+    final totalExcelHeight = excelHeight ?? screenSize.height;
+    double width = _getExcelWidth();
+    double height = _getExcelHeight();
     _onScrollListener();
     _onExcelDataChanged();
     return Stack(
@@ -477,7 +478,7 @@ extension FlutterExcelSnWidget on FlutterExcelWidget {
 }
 
 extension FlutterExcelSize on FlutterExcelWidget {
-  double get _getExcelWidth {
+  double _getExcelWidth() {
     double width = 0;
     for (int i = 0; i < excel.x; i++) {
       double itemWidth = excel.itemWidth;
@@ -490,7 +491,7 @@ extension FlutterExcelSize on FlutterExcelWidget {
     return width;
   }
 
-  double get _getExcelHeight {
+  double _getExcelHeight() {
     double height = 0;
     for (int i = 0; i < excel.y; i++) {
       double itemHeight = excel.itemHeight;
