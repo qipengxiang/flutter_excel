@@ -1,6 +1,6 @@
 # flutter_excel_table
 
-[![](https://img.shields.io/badge/flutter_excel_table-0.0.2-blue)](https://pub.dartlang.org/packages/flutter_excel_table)
+[![](https://img.shields.io/badge/flutter_excel_table-0.0.3-blue)](https://pub.dartlang.org/packages/flutter_excel_table)
 ![](https://img.shields.io/badge/Awesome-Flutter-blue)
 ![](https://img.shields.io/badge/Platform-Android_iOS_Web_Windows_MacOS_Linux-blue)
 ![](https://img.shields.io/badge/License-MIT-blue)
