@@ -42,6 +42,29 @@ class ExcelModel {
   final TextStyle? style;
   final Alignment alignment;
 
+  ///
+  /// [x] 横轴坐标
+  /// [y] 纵轴坐标
+  /// [itemWidth] 列宽
+  /// [itemHeight] 行高
+  /// [dividerWidth] 分割线宽度
+  /// [rowColor] 行颜色
+  /// [columnColor] 列颜色
+  /// [neighborColors] 邻格颜色
+  /// [backgroundColor] 背景颜色
+  /// [noNeighborColorPositions] 不需要渲染邻格颜色的位置
+  /// [defaultInputType] 默认输入类型
+  /// [isReadOnly] 是否只读
+  /// [showSn] 是否显示序号
+  /// [sn] 序号
+  /// [style] 样式
+  /// [alignment] 对齐方式
+  /// [dividerColor] 分割线颜色
+  /// [intersectionColor] 横竖交集的颜色
+  /// [positionColor] 位置颜色条件
+  /// [rowHeight] 按行条件设置高度
+  /// [columnWidth] 按列条件设置宽度
+  ///
   ExcelModel({
     required this.x,
     required this.y,
@@ -66,7 +89,10 @@ class ExcelModel {
     TextStyle? style,
   })  : sn = sn ?? ExcelSnModel(),
         dividerColor = dividerColor ?? Colors.black.withOpacity(0.15),
-        style = style ?? TextStyle(fontSize: 14.0, color: const Color(0xFF000000).withOpacity(.45));
+        style = style ??
+            TextStyle(
+                fontSize: 14.0,
+                color: const Color(0xFF000000).withOpacity(.45));
 }
 
 /// 序号属性,参考ExcelModel
@@ -85,7 +111,10 @@ class ExcelSnModel {
     TextStyle? style,
   })  : backgroundColor = backgroundColor ?? Colors.black.withOpacity(0.02),
         dividerColor = dividerColor ?? Colors.black.withOpacity(0.15),
-        style = style ?? TextStyle(fontSize: 14.0, color: const Color(0xFF000000).withOpacity(.45));
+        style = style ??
+            TextStyle(
+                fontSize: 14.0,
+                color: const Color(0xFF000000).withOpacity(.45));
 }
 
 class ExcelItemModel<T extends ExcelItemImp> {
@@ -116,7 +145,7 @@ class ExcelItemModel<T extends ExcelItemImp> {
     this.style,
     this.maxLine = 1,
     this.builder,
-  })  : controller = controller ?? TextEditingController();
+  }) : controller = controller ?? TextEditingController();
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> json = <String, dynamic>{};

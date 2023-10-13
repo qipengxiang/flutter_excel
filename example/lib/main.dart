@@ -8,7 +8,6 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -71,7 +70,8 @@ class HomeScene extends StatelessWidget {
               ),
               ExcelItemModel(
                 position: ExcelPosition(0, 5),
-                value: ExcelExampleModel(value: '1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ'),
+                value: ExcelExampleModel(
+                    value: '1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ'),
                 maxLine: 4,
                 isReadOnly: true,
               ),
@@ -151,7 +151,8 @@ class HomeScene extends StatelessWidget {
               ),
               ExcelItemModel(
                 position: ExcelPosition(0, 5),
-                value: ExcelExampleModel(value: '1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ'),
+                value: ExcelExampleModel(
+                    value: '1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ'),
                 maxLine: 4,
                 isReadOnly: true,
               ),
@@ -240,7 +241,8 @@ class HomeScene extends StatelessWidget {
               ),
               ExcelItemModel(
                 position: ExcelPosition(0, 5),
-                value: ExcelExampleModel(value: '1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ'),
+                value: ExcelExampleModel(
+                    value: '1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ'),
                 maxLine: 4,
                 isReadOnly: true,
               ),
@@ -275,7 +277,8 @@ class HomeScene extends StatelessWidget {
     );
   }
 
-  Widget _buildItem(BuildContext context, String title, ExcelModel excel, List<ExcelItemModel<ExcelExampleModel>> items) {
+  Widget _buildItem(BuildContext context, String title, ExcelModel excel,
+      List<ExcelItemModel<ExcelExampleModel>> items) {
     return ListTile(
       title: Text(title),
       onTap: () {

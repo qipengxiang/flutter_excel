@@ -8,12 +8,21 @@ import 'excel_model.dart';
 class FlutterExcelWidget<T extends ExcelItemImp> extends StatelessWidget {
   final ExcelModel excel;
   final List<ExcelItemModel<T>> items;
-  final Function(List<ExcelItemModel<T>> items, ExcelItemModel<T> model)? onItemClicked;
-  final Function(List<ExcelItemModel<T>> items, ExcelItemModel<T>? model, String? value)? onItemChanged;
+  final Function(List<ExcelItemModel<T>> items, ExcelItemModel<T> model)?
+      onItemClicked;
+  final Function(List<ExcelItemModel<T>> items, ExcelItemModel<T>? model,
+      String? value)? onItemChanged;
 
   final double? excelWidth; // excel total width ,default is screen width
   final double? excelHeight; // excel total height, default is screen height
 
+  ///
+  /// [excel] excel model
+  /// [items] excel items
+  /// [onItemClicked] item clicked callback
+  /// [onItemChanged] item changed callback
+  /// [excelWidth] excel total width ,default is screen width
+  /// [excelHeight] excel total height, default is screen height
   FlutterExcelWidget({
     Key? key,
     required this.excel,
@@ -26,10 +35,10 @@ class FlutterExcelWidget<T extends ExcelItemImp> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (!_isExceed) {
+    if (!_isExceed()) {
       throw 'Excel data is out of range.';
     }
-    if (!_isLegalMerge) {
+    if (!_isLegalMerge()) {
       throw 'The merged cell location is invalid, or the positions attribute of the merged cells cannot be empty.';
     }
     final screenSize = MediaQuery.of(context).size;
@@ -69,8 +78,13 @@ class FlutterExcelWidget<T extends ExcelItemImp> extends StatelessWidget {
           ),
         ),
         Positioned(
-          left: excel.showSn ? ((excel.sn?.itemWidth ?? excel.itemWidth) + excel.dividerWidth) : 0.0,
-          top: excel.showSn ? ((excel.sn?.itemHeight ?? excel.itemHeight) + excel.dividerWidth) : 0.0,
+          left: excel.showSn
+              ? ((excel.sn?.itemWidth ?? excel.itemWidth) + excel.dividerWidth)
+              : 0.0,
+          top: excel.showSn
+              ? ((excel.sn?.itemHeight ?? excel.itemHeight) +
+                  excel.dividerWidth)
+              : 0.0,
           child: SizedBox(
             height: totalExcelHeight,
             child: SingleChildScrollView(
@@ -101,12 +115,26 @@ class FlutterExcelWidget<T extends ExcelItemImp> extends StatelessWidget {
     );
   }
 
+  ///
+  /// sn horizontal scroll controller
   final ScrollController _snHorizontalController = ScrollController();
+
+  ///
+  /// sn vertical scroll controller
   final ScrollController _snVerticalController = ScrollController();
 
+  ///
+  /// excel horizontal scroll controller
   final ScrollController _excelHorizontalController = ScrollController();
+
+  ///
+  /// excel vertical scroll controller
   final ScrollController _excelVerticalController = ScrollController();
 
+  ///
+  /// build excel lines and cells
+  /// [totalWidth] total width
+  /// [totalHeight] total height
   List<Widget> _buildExcelLinesCells(double totalWidth, double totalHeight) {
     List<Widget> widgets = <Widget>[];
     double left = 0;
@@ -163,7 +191,8 @@ class FlutterExcelWidget<T extends ExcelItemImp> extends StatelessWidget {
         if (excel.rowHeight != null) {
           itemHeight = excel.rowHeight!(j);
         }
-        var model = items.flutterExcelFirstWhereOrNull((e) => e.position.x == i && e.position.y == j);
+        var model = items.flutterExcelFirstWhereOrNull(
+            (e) => e.position.x == i && e.position.y == j);
         Widget? widget = _itemBuilder(i, j, left, top, model: model);
         if (widget != null) {
           widgets.add(widget);
@@ -175,7 +204,15 @@ class FlutterExcelWidget<T extends ExcelItemImp> extends StatelessWidget {
     return widgets;
   }
 
-  Widget? _itemBuilder(int x, int y, double left, double top, {ExcelItemModel<T>? model}) {
+  ///
+  /// build excel cell item
+  /// [x] x position
+  /// [y] y position
+  /// [left] left position
+  /// [top] top position
+  /// [model] excel item model
+  Widget? _itemBuilder(int x, int y, double left, double top,
+      {ExcelItemModel<T>? model}) {
     Color? color;
     if (excel.positionColor != null) {
       if (excel.positionColor!(x, y)) {
@@ -184,10 +221,13 @@ class FlutterExcelWidget<T extends ExcelItemImp> extends StatelessWidget {
     }
     if (excel.neighborColors.isNotEmpty) {
       int startColorIndex = y % excel.neighborColors.length;
-      color = excel.neighborColors[(startColorIndex + x) % excel.neighborColors.length];
+      color = excel
+          .neighborColors[(startColorIndex + x) % excel.neighborColors.length];
     }
     if (excel.noNeighborColorPositions != null) {
-      if (excel.noNeighborColorPositions!.where((e) => e.x == x && e.y == y).isNotEmpty) {
+      if (excel.noNeighborColorPositions!
+          .where((e) => e.x == x && e.y == y)
+          .isNotEmpty) {
         color = null;
       }
     }
@@ -259,6 +299,11 @@ class FlutterExcelWidget<T extends ExcelItemImp> extends StatelessWidget {
     );
   }
 
+  ///
+  /// build excel cell item content
+  /// [x] x position
+  /// [y] y position
+  /// [model] excel item model
   Widget _itemContentBuilder(int x, int y, ExcelItemModel<T>? model) {
     model ??= ExcelItemModel<T>(position: ExcelPosition(x, y));
     if (model.builder != null) {
@@ -308,6 +353,10 @@ class FlutterExcelWidget<T extends ExcelItemImp> extends StatelessWidget {
     );
   }
 
+  ///
+  /// get merge min max x
+  /// [position] merge positions
+  /// return [minX,maxX]
   List<int> _getMergeMinMaxX(List<ExcelPosition> position) {
     position.sort((a, b) => a.x.compareTo(b.x));
     int minX = position.first.x;
@@ -315,6 +364,10 @@ class FlutterExcelWidget<T extends ExcelItemImp> extends StatelessWidget {
     return [minX, maxX];
   }
 
+  ///
+  /// get merge min max y
+  /// [position] merge positions
+  /// return [minY,maxY]
   List<int> _getMergeMinMaxY(List<ExcelPosition> position) {
     position.sort((a, b) => a.y.compareTo(b.y));
     int minY = position.first.y;
@@ -322,7 +375,9 @@ class FlutterExcelWidget<T extends ExcelItemImp> extends StatelessWidget {
     return [minY, maxY];
   }
 
-  bool get _isLegalMerge {
+  ///
+  /// is legal merge
+  bool _isLegalMerge() {
     // 非合并单元格,但是有多个单元格信息
     if (items.any((e) => !e.isMergeCell && e.positions.isNotEmpty)) {
       return false;
@@ -343,9 +398,12 @@ class FlutterExcelWidget<T extends ExcelItemImp> extends StatelessWidget {
     return true;
   }
 
-  bool get _isExceed {
+  ///
+  /// is exceed
+  bool _isExceed() {
     List<int> rows = items.map((e) => e.position.x).toList();
-    List<List<int>> mergeRow = items.map((e) => e.positions.map((e) => e.x).toList()).toList();
+    List<List<int>> mergeRow =
+        items.map((e) => e.positions.map((e) => e.x).toList()).toList();
     rows.addAll(mergeRow.expand((e) => e));
     if (rows.isNotEmpty) {
       rows.sort((a, b) => a.compareTo(b));
@@ -354,7 +412,8 @@ class FlutterExcelWidget<T extends ExcelItemImp> extends StatelessWidget {
       }
     }
     List<int> columns = items.map((e) => e.position.y).toList();
-    List<List<int>> mergeColumn = items.map((e) => e.positions.map((e) => e.y).toList()).toList();
+    List<List<int>> mergeColumn =
+        items.map((e) => e.positions.map((e) => e.y).toList()).toList();
     columns.addAll(mergeColumn.expand((e) => e));
     if (columns.isNotEmpty) {
       columns.sort((a, b) => a.compareTo(b));
@@ -365,6 +424,9 @@ class FlutterExcelWidget<T extends ExcelItemImp> extends StatelessWidget {
     return true;
   }
 
+  ///
+  /// excel data changed
+  /// [current] current item
   void _onExcelDataChanged({ExcelItemModel<T>? current}) {
     if (onItemChanged != null) {
       onItemChanged?.call(items, current, current?.value?.value);
@@ -439,6 +501,8 @@ extension FlutterExcelSnWidget on FlutterExcelWidget {
     );
   }
 
+  ///
+  /// build sn item
   Widget _buildSnItem(
     int index, {
     required double width,
@@ -465,6 +529,8 @@ extension FlutterExcelSnWidget on FlutterExcelWidget {
     );
   }
 
+  ///
+  /// convert sn index to A,B,C...
   String _convertSn(int index) {
     String result = '';
     while (index > 0) {
@@ -478,6 +544,8 @@ extension FlutterExcelSnWidget on FlutterExcelWidget {
 }
 
 extension FlutterExcelSize on FlutterExcelWidget {
+  ///
+  /// get excel width
   double _getExcelWidth() {
     double width = 0;
     for (int i = 0; i < excel.x; i++) {
@@ -491,6 +559,8 @@ extension FlutterExcelSize on FlutterExcelWidget {
     return width;
   }
 
+  ///
+  /// get excel height
   double _getExcelHeight() {
     double height = 0;
     for (int i = 0; i < excel.y; i++) {
@@ -506,12 +576,20 @@ extension FlutterExcelSize on FlutterExcelWidget {
 }
 
 extension FlutterExcelWidgetScroll on FlutterExcelWidget {
+  ///
+  /// on scroll listener
   void _onScrollListener() {
     _excelHorizontalController.addListener(_onHorizontalScrolled);
     _excelVerticalController.addListener(_onVerticalScrolled);
   }
 
-  void _onHorizontalScrolled() => _snHorizontalController.jumpTo(_excelHorizontalController.offset);
+  ///
+  /// on horizontal scrolled set sn horizontal scroll to position
+  void _onHorizontalScrolled() =>
+      _snHorizontalController.jumpTo(_excelHorizontalController.offset);
 
-  void _onVerticalScrolled() => _snVerticalController.jumpTo(_excelVerticalController.offset);
+  ///
+  /// on vertical scrolled set sn vertical scroll to position
+  void _onVerticalScrolled() =>
+      _snVerticalController.jumpTo(_excelVerticalController.offset);
 }

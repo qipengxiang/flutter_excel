@@ -1,4 +1,9 @@
 
+## 0.0.2+2
+
+* docs
+* fix bugs
+
 ## 0.0.2+1
 
 * fix bugs

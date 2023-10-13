@@ -8,7 +8,6 @@ enum FlutterExcelLineAxis {
 }
 
 class FlutterExcelLine extends StatelessWidget {
-
   final Color? color;
   final double prefix;
   final double suffix;
@@ -16,6 +15,13 @@ class FlutterExcelLine extends StatelessWidget {
   final double thickness;
   final double length;
 
+  ///
+  /// [color] divider color
+  /// [prefix] prefix spacing
+  /// [suffix] suffix spacing
+  /// [axis] axis
+  /// [thickness] divider thickness
+  /// [length] divider length
   FlutterExcelLine({
     Key? key,
     Color? color,
@@ -24,7 +30,8 @@ class FlutterExcelLine extends StatelessWidget {
     this.axis = FlutterExcelLineAxis.horizontal,
     this.thickness = 1.0,
     this.length = double.infinity,
-  }) : color = color ?? const Color(0xFFEFEFEF).withOpacity(0.6), super(key: key);
+  })  : color = color ?? const Color(0xFFEFEFEF).withOpacity(0.6),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
