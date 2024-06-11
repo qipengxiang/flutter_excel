@@ -48,70 +48,84 @@ class FlutterExcelWidget<T extends ExcelItemImp> extends StatelessWidget {
     double height = _getExcelHeight();
     _onScrollListener();
     _onExcelDataChanged();
-    return Stack(
-      children: [
-        Positioned(
-          left: (excel.sn?.itemWidth ?? excel.itemWidth) + excel.dividerWidth,
-          child: SizedBox(
+    return Container(
+      constraints: BoxConstraints.expand(
+        width: totalExcelWidth,
+        height: totalExcelHeight,
+      ),
+      child: SingleChildScrollView(
+        child: Container(
+          constraints: BoxConstraints.expand(
             width: totalExcelWidth,
-            height: excel.sn?.itemHeight ?? excel.itemHeight,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              controller: _snHorizontalController,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: excel.showSn ? excel.x : 0,
-              itemBuilder: _buildHorizontalSnLineItems,
-            ),
-          ),
-        ),
-        Positioned(
-          top: (excel.sn?.itemHeight ?? excel.itemHeight) + excel.dividerWidth,
-          child: SizedBox(
-            width: excel.sn?.itemWidth ?? excel.itemWidth,
             height: totalExcelHeight,
-            child: ListView.builder(
-              controller: _snVerticalController,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: excel.showSn ? excel.y : 0,
-              itemBuilder: _buildVerticalSnLineItems,
-            ),
           ),
-        ),
-        Positioned(
-          left: excel.showSn
-              ? ((excel.sn?.itemWidth ?? excel.itemWidth) + excel.dividerWidth)
-              : 0.0,
-          top: excel.showSn
-              ? ((excel.sn?.itemHeight ?? excel.itemHeight) +
-                  excel.dividerWidth)
-              : 0.0,
-          child: SizedBox(
-            height: totalExcelHeight,
-            child: SingleChildScrollView(
-              physics: const ClampingScrollPhysics(),
-              controller: _excelVerticalController,
-              child: SizedBox(
-                width: totalExcelWidth,
-                child: SingleChildScrollView(
-                  physics: const ClampingScrollPhysics(),
-                  controller: _excelHorizontalController,
-                  scrollDirection: Axis.horizontal,
-                  child: Container(
-                    color: excel.backgroundColor,
-                    constraints: BoxConstraints.expand(
-                      width: width,
-                      height: height,
-                    ),
-                    child: Stack(
-                      children: _buildExcelLinesCells(width, height),
+          child: Stack(
+            children: [
+              Positioned(
+                left: (excel.sn?.itemWidth ?? excel.itemWidth) + excel.dividerWidth,
+                child: SizedBox(
+                  width: totalExcelWidth,
+                  height: excel.sn?.itemHeight ?? excel.itemHeight,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    controller: _snHorizontalController,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: excel.showSn ? excel.x : 0,
+                    itemBuilder: _buildHorizontalSnLineItems,
+                  ),
+                ),
+              ),
+              Positioned(
+                top: (excel.sn?.itemHeight ?? excel.itemHeight) + excel.dividerWidth,
+                child: SizedBox(
+                  width: excel.sn?.itemWidth ?? excel.itemWidth,
+                  height: totalExcelHeight,
+                  child: ListView.builder(
+                    controller: _snVerticalController,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: excel.showSn ? excel.y : 0,
+                    itemBuilder: _buildVerticalSnLineItems,
+                  ),
+                ),
+              ),
+              Positioned(
+                left: excel.showSn
+                    ? ((excel.sn?.itemWidth ?? excel.itemWidth) + excel.dividerWidth)
+                    : 0.0,
+                top: excel.showSn
+                    ? ((excel.sn?.itemHeight ?? excel.itemHeight) +
+                        excel.dividerWidth)
+                    : 0.0,
+                child: SizedBox(
+                  height: totalExcelHeight,
+                  child: SingleChildScrollView(
+                    physics: const ClampingScrollPhysics(),
+                    controller: _excelVerticalController,
+                    child: SizedBox(
+                      width: totalExcelWidth,
+                      child: SingleChildScrollView(
+                        physics: const ClampingScrollPhysics(),
+                        controller: _excelHorizontalController,
+                        scrollDirection: Axis.horizontal,
+                        child: Container(
+                          color: excel.backgroundColor,
+                          constraints: BoxConstraints.expand(
+                            width: width,
+                            height: height,
+                          ),
+                          child: Stack(
+                            children: _buildExcelLinesCells(width, height),
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
+            ],
           ),
         ),
-      ],
+      ),
     );
   }
 

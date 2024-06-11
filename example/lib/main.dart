@@ -314,14 +314,11 @@ class ExampleScene extends StatelessWidget {
       appBar: AppBar(
         title: Text(title ?? 'Excel Example'),
       ),
-      body: Container(
-        constraints: const BoxConstraints.expand(),
-        child: FlutterExcelWidget<ExcelExampleModel>(
-          excel: excel,
-          items: items,
-          onItemClicked: (items, item) {},
-          onItemChanged: (items, item, value) {},
-        ),
+      body: FlutterExcelWidget<ExcelExampleModel>(
+        excel: excel,
+        items: items,
+        onItemClicked: (items, item) {},
+        onItemChanged: (items, item, value) {},
       ),
     );
   }

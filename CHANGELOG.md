@@ -1,4 +1,8 @@
 
+## 0.0.4
+
+* Automatically jack up the keyboard
+
 ## 0.0.3
 
 * docs
